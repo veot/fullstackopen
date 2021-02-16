@@ -54,11 +54,17 @@ const Numbers = ({ allPersons, nameFilter, handleRemove }) => {
   );
 };
 
+const Notification = ({ message, style }) => {
+  return message === null ? null : <div style={style}>{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [nameFilter, setNameFilter] = useState("");
+  const [msgSuc, setMsgSuc] = useState(null);
+  const [msgErr, setMsgErr] = useState(null);
 
   useEffect(
     () => personService.getAll().then((persons) => setPersons(persons)),
@@ -67,6 +73,7 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let successMsg = null;
     if (newName === "") return;
     if (persons.some((p) => p.name === newName)) {
       if (
@@ -77,22 +84,33 @@ const App = () => {
         const personToUpdate = persons.find((p) => p.name === newName);
         personService
           .update(personToUpdate.id, { ...personToUpdate, number: newNumber })
-          .then((updatedPerson) =>
+          .then((updatedPerson) => {
             setPersons(
               persons.map((p) =>
                 p.id !== updatedPerson.id ? p : updatedPerson
               )
-            )
-          );
+            );
+            successMsg = "Updated";
+          })
+          .catch((error) => {
+            setMsgErr(`${newName} has already been removed from server`);
+            setTimeout(() => setMsgErr(null), 5000);
+            setPersons(persons.filter((p) => p.id !== personToUpdate.id));
+          });
       }
     } else {
       const newPerson = { name: newName, number: newNumber };
       personService
         .create(newPerson)
         .then((p) => setPersons(persons.concat(p)));
+      successMsg = "Added";
     }
     setNewName("");
     setNewNumber("");
+    if (successMsg) {
+      setMsgSuc(`${successMsg} ${newName}`);
+      setTimeout(() => setMsgSuc(null), 3000);
+    }
   };
 
   const handleRemove = (id) => {
@@ -111,9 +129,23 @@ const App = () => {
 
   const handleNameFilterChange = (e) => setNameFilter(e.target.value);
 
+  const styleSuccess = {
+    background: "lightgrey",
+    fontSize: 20,
+    color: "green",
+    padding: 10,
+    borderStyle: "solid",
+    borderRadius: 5,
+    marginBottom: 10,
+  };
+
+  const styleError = { ...styleSuccess, color: "red" };
+
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={msgSuc} style={styleSuccess} />
+      <Notification message={msgErr} style={styleError} />
       <Filter state={nameFilter} onChange={handleNameFilterChange} />
       <h2>Add new contact</h2>
       <PersonForm
