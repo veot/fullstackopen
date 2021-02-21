@@ -1,7 +1,7 @@
-const router = require("express").Router();
-const Blog = require("../models/blog");
+const router = require('express').Router();
+const Blog = require('../models/blog');
 
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   Blog.find({})
     .then((data) => {
       res.json(data);
@@ -11,7 +11,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   const blog = new Blog(req.body);
 
   blog
