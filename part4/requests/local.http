@@ -1,0 +1,32 @@
+###
+# Get all entries
+GET http://localhost:3001/api/blogs
+
+###
+# Get entry
+GET http://localhost:3001/api/blogs/602eb0b564ef908e0a038ec7
+
+###
+# Delete entry
+DELETE http://localhost:3001/api/blogs/602eb23c5dcdfa8ed13d3967
+
+###
+# Add entry
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Full Stack Tutorial",
+    "author": "LeBron James",
+    "url": "fullstacklebron.com/blogs/fullstacktut",
+    "likes": 100
+}
+
+###
+# Update entry
+PUT http://localhost:3001/api/blogs/602eb0b564ef908e0a038ec7
+Content-Type: application/json
+
+{
+    "likes": 200"
+}
