@@ -72,6 +72,13 @@ describe('creating a new blog', () => {
     expect(res.body).toHaveLength(blogs.length + 1);
     expect(res.body[blogs.length].likes).toBe(0);
   });
+
+  test('fails with 400 if data is invalid', async () => {
+    const blog = { author: 'John Jest' };
+    await api.post('/api/blogs').send(blog).expect(400);
+    const res = await api.get('/api/blogs');
+    expect(res.body).toHaveLength(blogs.length);
+  });
 });
 
 afterAll(() => mongoose.connection.close());
