@@ -31,6 +31,11 @@ describe('when the database contains some blogs', () => {
     const res = await api.get('/api/blogs');
     expect(res.body[0].author).toBe('Michael Chan');
   });
+
+  test('blogs contain id', async () => {
+    const res = await api.get('/api/blogs');
+    expect(res.body[0].id).toBeDefined();
+  });
 });
 
 afterAll(() => mongoose.connection.close());
