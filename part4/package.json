@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_EVN=production node index.js",
     "dev": "NODE_EVN=development nodemon index.js",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

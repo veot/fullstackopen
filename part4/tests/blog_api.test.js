@@ -2,10 +2,16 @@ const { before } = require('lodash');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
+const blog = require('../models/blog');
 const Blog = require('../models/blog');
 const blogs = require('./blog_list');
 
 const api = supertest(app);
+
+const getSavedBlogs = async () => {
+  const data = await Blog.find({});
+  return data.map((b) => b.toJSON());
+};
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -51,10 +57,10 @@ describe('creating a new blog', () => {
       .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
-    const res = await api.get('/api/blogs');
-    expect(res.body).toHaveLength(blogs.length + 1);
-    expect(res.body.map((b) => b.author)).toContain('John Jest');
-    expect(res.body[blogs.length].likes).toBe(57);
+    const savedBlogs = await getSavedBlogs();
+    expect(savedBlogs).toHaveLength(blogs.length + 1);
+    expect(savedBlogs.map((b) => b.author)).toContain('John Jest');
+    expect(savedBlogs[savedBlogs.length - 1].likes).toBe(57);
   });
 
   test('sets likes to 0 by default', async () => {
@@ -68,16 +74,27 @@ describe('creating a new blog', () => {
       .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
-    const res = await api.get('/api/blogs');
-    expect(res.body).toHaveLength(blogs.length + 1);
-    expect(res.body[blogs.length].likes).toBe(0);
+    const savedBlogs = await getSavedBlogs();
+    expect(savedBlogs).toHaveLength(blogs.length + 1);
+    expect(savedBlogs[savedBlogs.length - 1].likes).toBe(0);
   });
 
   test('fails with 400 if data is invalid', async () => {
     const blog = { author: 'John Jest' };
     await api.post('/api/blogs').send(blog).expect(400);
-    const res = await api.get('/api/blogs');
-    expect(res.body).toHaveLength(blogs.length);
+    const savedBlogs = await getSavedBlogs();
+    expect(savedBlogs).toHaveLength(blogs.length);
+  });
+});
+
+describe('deleting a single blog', () => {
+  test('works with 204 if data is valid', async () => {
+    const blogsAtStart = await getSavedBlogs();
+    const deletedBlog = blogsAtStart[0];
+    await api.delete(`/api/blogs/${deletedBlog.id}`).expect(204);
+    const blogsAtEnd = await getSavedBlogs();
+    expect(blogsAtEnd).toHaveLength(blogs.length - 1);
+    expect(blogsAtEnd.map((b) => b.title)).not.toContain('React patterns');
   });
 });
 

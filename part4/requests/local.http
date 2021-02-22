@@ -4,11 +4,11 @@ GET http://localhost:3001/api/blogs
 
 ###
 # Get entry
-GET http://localhost:3001/api/blogs/602eb0b564ef908e0a038ec7
+GET http://localhost:3001/api/blogs/60322ab521a62f441da313f8
 
 ###
 # Delete entry
-DELETE http://localhost:3001/api/blogs/602eb23c5dcdfa8ed13d3967
+DELETE http://localhost:3001/api/blogs/60321ab95eabcc304d20b60c
 
 ###
 # Add entry
