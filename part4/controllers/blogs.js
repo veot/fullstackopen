@@ -6,17 +6,10 @@ router.get('/', async (req, res) => {
   res.json(blogs);
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res) => {
   const blog = new Blog(req.body);
-
-  blog
-    .save()
-    .then((data) => {
-      res.status(201).json(data);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  const result = await blog.save();
+  res.status(201).json(result);
 });
 
 module.exports = router;

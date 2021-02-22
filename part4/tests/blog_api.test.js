@@ -24,7 +24,7 @@ describe('when the database contains some blogs', () => {
 
   test('all blogs are returned', async () => {
     const res = await api.get('/api/blogs');
-    expect(res.body).toHaveLength(6);
+    expect(res.body).toHaveLength(blogs.length);
   });
 
   test('the first blog is by Michael Chan', async () => {
@@ -35,6 +35,25 @@ describe('when the database contains some blogs', () => {
   test('blogs contain id', async () => {
     const res = await api.get('/api/blogs');
     expect(res.body[0].id).toBeDefined();
+  });
+});
+
+describe('creating a new blog', () => {
+  test('works with valid data', async () => {
+    const blog = {
+      title: 'JavaScript testing tutorial',
+      author: 'John Jest',
+      url: 'http://example.com/jest-tut',
+      likes: 0,
+    };
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+    const res = await api.get('/api/blogs');
+    expect(res.body).toHaveLength(blogs.length + 1);
+    expect(res.body.map((b) => b.author)).toContain('John Jest');
   });
 });
 
