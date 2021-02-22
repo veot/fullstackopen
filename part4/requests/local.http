@@ -24,9 +24,9 @@ Content-Type: application/json
 
 ###
 # Update entry
-PUT http://localhost:3001/api/blogs/602eb0b564ef908e0a038ec7
+PUT http://localhost:3001/api/blogs/60321ab95eabcc304d20b60c
 Content-Type: application/json
 
 {
-    "likes": 200"
+    "likes": 300
 }

@@ -87,7 +87,7 @@ describe('creating a new blog', () => {
   });
 });
 
-describe('deleting a single blog', () => {
+describe('deleting a blog', () => {
   test('works with 204 if data is valid', async () => {
     const blogsAtStart = await getSavedBlogs();
     const deletedBlog = blogsAtStart[0];
@@ -95,6 +95,19 @@ describe('deleting a single blog', () => {
     const blogsAtEnd = await getSavedBlogs();
     expect(blogsAtEnd).toHaveLength(blogs.length - 1);
     expect(blogsAtEnd.map((b) => b.title)).not.toContain('React patterns');
+  });
+});
+
+describe('updating a blog', () => {
+  test('works and returns the updated item', async () => {
+    const blogsAtStart = await getSavedBlogs();
+    await api
+      .put(`/api/blogs/${blogsAtStart[0].id}`)
+      .send({ likes: 99 })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    const blogsAtEnd = await getSavedBlogs();
+    expect(blogsAtEnd[0].likes).toBe(99);
   });
 });
 
