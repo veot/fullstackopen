@@ -44,7 +44,7 @@ describe('creating a new blog', () => {
       title: 'JavaScript testing tutorial',
       author: 'John Jest',
       url: 'http://example.com/jest-tut',
-      likes: 0,
+      likes: 57,
     };
     await api
       .post('/api/blogs')
@@ -54,6 +54,23 @@ describe('creating a new blog', () => {
     const res = await api.get('/api/blogs');
     expect(res.body).toHaveLength(blogs.length + 1);
     expect(res.body.map((b) => b.author)).toContain('John Jest');
+    expect(res.body[blogs.length].likes).toBe(57);
+  });
+
+  test('sets likes to 0 by default', async () => {
+    const blog = {
+      title: 'JavaScript testing tutorial',
+      author: 'John Jest',
+      url: 'http://example.com/jest-tut',
+    };
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+    const res = await api.get('/api/blogs');
+    expect(res.body).toHaveLength(blogs.length + 1);
+    expect(res.body[blogs.length].likes).toBe(0);
   });
 });
 
