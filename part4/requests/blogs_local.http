@@ -14,12 +14,13 @@ DELETE http://localhost:3001/api/blogs/60321ab95eabcc304d20b60c
 # Add entry
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJiOCIsImlkIjoiNjAzNjU5ZWU5M2U5YmIzZDA5ZjUyYTM5IiwiaWF0IjoxNjE0MTkyMTgzfQ.eX4316ByUT2SihHN8D7WS1jIDzXBHPucwtu1SgEAQhE
 
 {
-    "title": "Full Stack Tutorial",
-    "author": "LeBron James",
-    "url": "fullstacklebron.com/blogs/fullstacktut",
-    "likes": 100
+    "title": "Test Title 1",
+    "author": "Test Author 1",
+    "url": "test.com",
+    "likes": 10
 }
 
 ###
