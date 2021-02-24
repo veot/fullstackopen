@@ -19,6 +19,8 @@ router.post('/', async (req, res) => {
   res.status(201).json(savedUser);
 });
 
-router.get('/', async (req, res) => res.json(await User.find({})));
+router.get('/', async (req, res) =>
+  res.json(await User.find({}).populate('blogs', { user: 0, likes: 0 })),
+);
 
 module.exports = router;
