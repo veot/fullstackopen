@@ -3,21 +3,13 @@ const router = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-const getTokenFrom = (req) => {
-  const auth = req.get('authorization');
-  if (auth && auth.toLowerCase().startsWith('bearer '))
-    return auth.substring(7);
-  return null;
-};
-
 router.get('/', async (req, res) =>
   res.json(await Blog.find({}).populate('user', { username: 1, name: 1 })),
 );
 
 router.post('/', async (req, res) => {
-  const token = getTokenFrom(req);
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!token || !decodedToken.id)
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  if (!req.token || !decodedToken.id)
     return res.status(401).json({ error: 'Token missing or invalid' });
   const user = await User.findById(decodedToken.id);
 
