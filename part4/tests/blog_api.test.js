@@ -3,6 +3,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
 const blogs = require('./blog_list');
+const User = require('../models/user');
 
 const api = supertest(app);
 
@@ -11,11 +12,20 @@ const getSavedBlogs = async () => {
   return data.map((b) => b.toJSON());
 };
 
+let token;
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   const blogObjects = blogs.map((b) => Blog(b));
   const promiseArray = blogObjects.map((b) => b.save());
   await Promise.all(promiseArray);
+  await api
+    .post('/api/users')
+    .send({ username: 'user1', name: 'User One', password: 'user1' });
+  const result = await api
+    .post('/api/login')
+    .send({ username: 'user1', password: 'user1' });
+  token = result.body.token;
 });
 
 describe('when the database contains some blogs', () => {
@@ -52,6 +62,7 @@ describe('creating a new blog', () => {
     };
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -69,6 +80,7 @@ describe('creating a new blog', () => {
     };
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -79,20 +91,40 @@ describe('creating a new blog', () => {
 
   test('fails with 400 if data is invalid', async () => {
     const blog = { author: 'John Jest' };
-    await api.post('/api/blogs').send(blog).expect(400);
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(blog)
+      .expect(400);
     const savedBlogs = await getSavedBlogs();
     expect(savedBlogs).toHaveLength(blogs.length);
+  });
+
+  test('fails with 401 without token', async () => {
+    const blog = { author: 'John Jest' };
+    const result = await api.post('/api/blogs').send(blog).expect(401);
+    const savedBlogs = await getSavedBlogs();
+    expect(savedBlogs).toHaveLength(blogs.length);
+    expect(result.body.error).toContain('invalid token');
   });
 });
 
 describe('deleting a blog', () => {
   test('works with 204 if data is valid', async () => {
-    const blogsAtStart = await getSavedBlogs();
-    const deletedBlog = blogsAtStart[0];
-    await api.delete(`/api/blogs/${deletedBlog.id}`).expect(204);
+    const result = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send({ title: 'title1', author: 'author1', url: 'test.com' });
+    // const blogsAtStart = await getSavedBlogs();
+    // const deletedBlog = blogsAtStart[blogsAtStart.length - 1];
+    await api
+      .delete(`/api/blogs/${result.body.id}`)
+      .set('Authorization', `bearer ${token}`)
+      .send()
+      .expect(204);
     const blogsAtEnd = await getSavedBlogs();
-    expect(blogsAtEnd).toHaveLength(blogs.length - 1);
-    expect(blogsAtEnd.map((b) => b.title)).not.toContain('React patterns');
+    // expect(blogsAtEnd).toHaveLength(blogs.length - 1);
+    expect(blogsAtEnd.map((b) => b.title)).not.toContain('title1');
   });
 });
 

@@ -29,7 +29,14 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  await Blog.findByIdAndRemove(req.params.id);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  if (!req.token || !decodedToken.id)
+    return res.status(401).json({ error: 'Token missing or invalid' });
+  const blog = await Blog.findById(req.params.id);
+  if (!blog) return res.status(204).end();
+  if (blog.user.toString() !== decodedToken.id)
+    return res.status(403).json({ error: 'Unauthorized' });
+  await blog.remove();
   res.status(204).end();
 });
 

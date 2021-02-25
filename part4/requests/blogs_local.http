@@ -1,17 +1,14 @@
-###
-# Get all entries
+### Get all
 GET http://localhost:3001/api/blogs
 
-###
-# Get entry
+### Get single
 GET http://localhost:3001/api/blogs/60322ab521a62f441da313f8
 
-###
-# Delete entry
-DELETE http://localhost:3001/api/blogs/60321ab95eabcc304d20b60c
+### Delete
+DELETE http://localhost:3001/api/blogs/60369fa1fe228081ff1df481
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2MDM3NjA2MzkzMDNlZjE5NTRlYWI5YTQiLCJpYXQiOjE2MTQyNDE5MDV9.lw2Ws4LEQSrtP70420TbJgx7pq4BBTyBTYkB9FhQxQE
 
-###
-# Add entry
+### Create
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJiOCIsImlkIjoiNjAzNjU5ZWU5M2U5YmIzZDA5ZjUyYTM5IiwiaWF0IjoxNjE0MTkyMTgzfQ.eX4316ByUT2SihHN8D7WS1jIDzXBHPucwtu1SgEAQhE
@@ -23,8 +20,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJiO
     "likes": 10
 }
 
-###
-# Update entry
+### Update
 PUT http://localhost:3001/api/blogs/60321ab95eabcc304d20b60c
 Content-Type: application/json
 
