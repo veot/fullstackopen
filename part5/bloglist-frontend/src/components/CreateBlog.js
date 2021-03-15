@@ -1,39 +1,52 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const CreateBlog = (props) => (
-  <div>
-    <h3>create new</h3>
-    <form onSubmit={props.onCreate}>
-      <div>
-        title:{' '}
-        <input
-          type="text"
-          name="title"
-          value={props.title}
-          onChange={({ target }) => props.setTitle(target.value)}
-        />
-      </div>
-      <div>
-        author:{' '}
-        <input
-          type="text"
-          name="author"
-          value={props.author}
-          onChange={({ target }) => props.setAuthor(target.value)}
-        />
-      </div>
-      <div>
-        url:{' '}
-        <input
-          type="text"
-          name="url"
-          value={props.url}
-          onChange={({ target }) => props.setUrl(target.value)}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  </div>
-)
+const CreateBlog = ({ createBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    createBlog({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+  return (
+    <div>
+      <h3>create new</h3>
+      <form onSubmit={handleSubmit}>
+        <div>
+          title:{' '}
+          <input
+            type="text"
+            name="title"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author:{' '}
+          <input
+            type="text"
+            name="author"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:{' '}
+          <input
+            type="text"
+            name="url"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+}
 
 export default CreateBlog

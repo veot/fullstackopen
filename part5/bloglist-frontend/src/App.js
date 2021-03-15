@@ -11,9 +11,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
@@ -44,7 +41,7 @@ const App = () => {
       setPassword('')
     } catch (e) {
       notify(e.response.data.error, 'error')
-      console.log(e)
+      // console.log(e)
     }
   }
 
@@ -54,19 +51,14 @@ const App = () => {
     notify('Logged out')
   }
 
-  const handleCreate = async (e) => {
-    e.preventDefault()
+  const createBlog = async (blogObj) => {
     try {
-      const blogObj = { title, author, url, user }
-      const newBlog = await blogService.create(blogObj)
+      const newBlog = await blogService.create({ ...blogObj, user })
       setBlogs(blogs.concat(newBlog))
-      notify(`${title} by ${author} was added`)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      notify(`${blogObj.title} by ${blogObj.author} was added`)
     } catch (e) {
       notify(e.response.data.error, 'error')
-      console.log('error:', e)
+      // console.log('error:', e)
     }
   }
 
@@ -103,15 +95,7 @@ const App = () => {
             <Blog key={blog.id} blog={blog} />
           ))}
           <Togglable buttonLabel="new blog">
-            <CreateBlog
-              onCreate={handleCreate}
-              title={title}
-              setTitle={setTitle}
-              author={author}
-              setAuthor={setAuthor}
-              url={url}
-              setUrl={setUrl}
-            />
+            <CreateBlog createBlog={createBlog} />
           </Togglable>
         </>
       )}
