@@ -12,4 +12,11 @@ const getAll = () => {
   return request.then((response) => response.data)
 }
 
-export default { getAll, setToken }
+const create = async (blogObj) => {
+  const config = { headers: { Authorization: token } }
+  const result = await axios.post(baseUrl, blogObj, config)
+  return result.data
+}
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default { getAll, create, setToken }
