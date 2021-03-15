@@ -41,7 +41,6 @@ const App = () => {
       setPassword('')
     } catch (e) {
       notify(e.response.data.error, 'error')
-      // console.log(e)
     }
   }
 
@@ -58,7 +57,6 @@ const App = () => {
       notify(`${blogObj.title} by ${blogObj.author} was added`)
     } catch (e) {
       notify(e.response.data.error, 'error')
-      // console.log('error:', e)
     }
   }
 
