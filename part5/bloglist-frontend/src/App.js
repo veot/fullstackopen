@@ -13,6 +13,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -37,9 +38,11 @@ const App = () => {
       window.localStorage.setItem('currentUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
+      notify('Logged in')
       setUsername('')
       setPassword('')
     } catch (e) {
+      notify(e.response.data.error, 'error')
       console.log(e)
     }
   }
@@ -47,6 +50,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('currentUser')
     setUser(null)
+    notify('Logged out')
   }
 
   const handleCreate = async (e) => {
@@ -55,16 +59,28 @@ const App = () => {
       const blogObj = { title, author, url, user }
       const newBlog = await blogService.create(blogObj)
       setBlogs(blogs.concat(newBlog))
+      notify(`${title} by ${author} was added`)
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (e) {
-      console.log(e)
+      notify(e.response.data.error, 'error')
+      console.log('error:', e)
     }
+  }
+
+  const notify = (message, type = 'success') => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   return (
     <div>
+      {notification && (
+        <div className={notification.type}>{notification.message}</div>
+      )}
       {user === null ? (
         <>
           <h2>log in</h2>
