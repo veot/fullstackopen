@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, username, onRemove }) => {
+const Blog = ({ blog, username, onRemove, handleLike }) => {
   const [view, setView] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
-  const handleLike = async () => {
-    const result = await blogService.update(blog.id, { likes: likes + 1 })
-    setLikes(result.likes)
+  if (!handleLike) {
+    handleLike = async () => {
+      const result = await blogService.update(blog.id, { likes: likes + 1 })
+      setLikes(result.likes)
+    }
   }
 
   return (
