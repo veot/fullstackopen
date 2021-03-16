@@ -89,9 +89,11 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          {blogs
+            .sort((a, b) => -(a.likes - b.likes))
+            .map((blog) => (
+              <Blog key={blog.id} blog={blog} />
+            ))}
           <Togglable buttonLabel="new blog">
             <CreateBlog createBlog={createBlog} />
           </Togglable>
