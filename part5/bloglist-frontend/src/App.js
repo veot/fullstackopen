@@ -53,6 +53,7 @@ const App = () => {
   const createBlog = async (blogObj) => {
     try {
       const newBlog = await blogService.create({ ...blogObj, user })
+      newBlog.user = user
       setBlogs(blogs.concat(newBlog))
       notify(`${blogObj.title} by ${blogObj.author} was added`)
     } catch (e) {
@@ -65,6 +66,15 @@ const App = () => {
     setTimeout(() => {
       setNotification(null)
     }, 5000)
+  }
+
+  const handleRemove = async (id) => {
+    try {
+      await blogService.remove(id)
+      setBlogs(blogs.filter((b) => b.id !== id))
+    } catch (err) {
+      notify(err.response.data.error, 'error')
+    }
   }
 
   return (
@@ -92,7 +102,12 @@ const App = () => {
           {blogs
             .sort((a, b) => -(a.likes - b.likes))
             .map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                username={user.username}
+                onRemove={handleRemove}
+              />
             ))}
           <Togglable buttonLabel="new blog">
             <CreateBlog createBlog={createBlog} />
