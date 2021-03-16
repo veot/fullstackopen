@@ -15,7 +15,10 @@ const Blog = ({ blog, username, onRemove }) => {
     <div className="blog">
       {blog.title}{' '}
       <button onClick={() => setView(!view)}>{view ? 'hide' : 'view'}</button>
-      <div style={view ? { display: '' } : { display: 'none' }}>
+      <div
+        className="info"
+        style={view ? { display: '' } : { display: 'none' }}
+      >
         <ul>
           <li>
             <button className="link-button">{blog.url}</button>
