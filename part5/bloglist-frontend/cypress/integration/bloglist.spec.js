@@ -41,15 +41,61 @@ describe('Blog app', function () {
   describe('When logged in', function () {
     beforeEach(function () {
       cy.login({ username: 'user1', password: 'user1pass' })
+      // cy.createBlog({
+      //   title: 'Title 1',
+      //   author: 'Author 1',
+      //   url: 'example.com',
+      // })
     })
 
     it('A blog can be created', function () {
       cy.contains('new blog').click()
-      cy.get('#title').type('Title 1')
-      cy.get('#author').type('Author 1')
+      cy.get('#title').type('Title 2')
+      cy.get('#author').type('Author 2')
       cy.get('#url').type('test-example.com')
       cy.get('button').contains('create').click()
-      cy.get('div.blog').contains('Title 1')
+      cy.get('div.blog').contains('Title 2')
+    })
+
+    it('User can like a blog', function () {
+      cy.contains('new blog').click()
+      cy.get('#title').type('Title 2')
+      cy.get('#author').type('Author 2')
+      cy.get('#url').type('test-example.com')
+      cy.get('button').contains('create').click()
+      cy.get('div.blog').contains('Title 2')
+      cy.get('button').contains('view').click()
+      cy.get('button').contains('like').click()
+    })
+
+    it('User can delete a blog', function () {
+      cy.contains('new blog').click()
+      cy.get('#title').type('Title 2')
+      cy.get('#author').type('Author 2')
+      cy.get('#url').type('test-example.com')
+      cy.get('button').contains('create').click()
+      cy.get('div.blog').contains('Title 2')
+      cy.get('button').contains('view').click()
+      cy.get('button').contains('remove').click()
+      cy.should('not.contain', 'Title 2')
+    })
+
+    it('Blogs are ordered by likes', function () {
+      cy.contains('new blog').click()
+      cy.get('#title').type('Title 2')
+      cy.get('#author').type('Author 2')
+      cy.get('#url').type('test-example.com')
+      cy.get('button').contains('create').click()
+      cy.get('#title').type('Title 3')
+      cy.get('#author').type('Author 3')
+      cy.get('#url').type('test-example.com')
+      cy.get('button').contains('create').click()
+      cy.wait(500)
+      cy.get('button').eq(5).click()
+      cy.get('button').eq(7).click()
+      cy.get('button').eq(7).click()
+      cy.visit('http://localhost:3000')
+      cy.get('.blog').contains('Title 3')
     })
   })
 })

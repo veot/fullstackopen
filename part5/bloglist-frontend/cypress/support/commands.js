@@ -33,3 +33,13 @@ Cypress.Commands.add('login', ({ username, password }) => {
     cy.visit('http://localhost:3000')
   })
 })
+
+Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+  cy.request('POST', 'http://localhost:3001/api/blogs', {
+    title,
+    author,
+    url,
+  }).then(() => {
+    cy.visit('http://localhost:3000')
+  })
+})
